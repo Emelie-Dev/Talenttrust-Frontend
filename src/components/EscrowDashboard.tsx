@@ -1,7 +1,8 @@
 'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { api, EscrowContract } from '@/lib/api';
+import { DisputeDialog } from '@/components/disputes/DisputeDialog';
 
 const short = (a: string) => (a.length > 14 ? `${a.slice(0, 6)}...${a.slice(-4)}` : a);
 
@@ -9,6 +10,8 @@ export function EscrowDashboard() {
   const [contracts, setContracts] = useState<EscrowContract[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<number | 'new' | null>(null);
+  const [disputeContract, setDisputeContract] = useState<EscrowContract | null>(null);
+  const disputeTriggerRef = useRef<HTMLButtonElement>(null);
   const [form, setForm] = useState({
     title: 'Website redesign',
     client: 'GCLIENT' + 'X'.repeat(49),
@@ -159,11 +162,10 @@ export function EscrowDashboard() {
                     <button
                       className="btn btn-secondary btn-sm"
                       disabled={busy === c.id}
-                      onClick={() =>
-                        act(c.id, () =>
-                          api(`/api/v1/contracts/${c.id}/dispute`, { method: 'POST', body: { raisedBy: c.client, reason: 'Raised from dashboard' } }),
-                        )
-                      }
+                      onClick={(event) => {
+                        disputeTriggerRef.current = event.currentTarget;
+                        setDisputeContract(c);
+                      }}
                     >
                       Dispute
                     </button>
@@ -208,6 +210,14 @@ export function EscrowDashboard() {
           );
         })}
       </div>
+      {disputeContract && (
+        <DisputeDialog
+          contract={disputeContract}
+          triggerRef={disputeTriggerRef}
+          onClose={() => setDisputeContract(null)}
+          onSuccess={load}
+        />
+      )}
     </div>
   );
 }
