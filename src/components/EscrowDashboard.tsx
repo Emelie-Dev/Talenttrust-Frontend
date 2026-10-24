@@ -14,11 +14,13 @@ import {
   applyQuery,
   ContractQuery,
   DEFAULT_QUERY,
+  filterContracts,
   parseQuery,
   toSearchParams,
 } from "@/lib/contractQuery";
 import { EscrowToolbar } from "./escrow/EscrowToolbar";
 import { Pagination } from "./escrow/Pagination";
+import { ExportMenu } from "./escrow/ExportMenu";
 import { DisputeDialog } from "./disputes/DisputeDialog";
 
 const short = (a: string) =>
@@ -103,6 +105,10 @@ export function EscrowDashboard() {
 
   const result = useMemo(
     () => applyQuery(contracts ?? [], query),
+    [contracts, query],
+  );
+  const visible = useMemo(
+    () => (contracts ? filterContracts(contracts, query) : null),
     [contracts, query],
   );
   const filtered = query.status !== "" || query.q !== "";
@@ -218,6 +224,9 @@ export function EscrowDashboard() {
       </form>
 
       <div className="stack" style={{ minWidth: 0 }}>
+        <div className="row list-actions">
+          <ExportMenu contracts={visible} />
+        </div>
         {error && (
           <div className="alert alert-error" role="alert" title={error.detail}>
             {error.message}
