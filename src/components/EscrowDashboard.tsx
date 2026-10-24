@@ -19,6 +19,7 @@ import {
 } from "@/lib/contractQuery";
 import { EscrowToolbar } from "./escrow/EscrowToolbar";
 import { Pagination } from "./escrow/Pagination";
+import { DisputeDialog } from "./disputes/DisputeDialog";
 
 const short = (a: string) =>
   a.length > 14 ? `${a.slice(0, 6)}...${a.slice(-4)}` : a;
@@ -30,6 +31,10 @@ export function EscrowDashboard() {
   const query = useMemo(() => parseQuery(searchParams), [searchParams]);
   const [search, setSearch] = useState(query.q);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const disputeTriggerRef = useRef<HTMLButtonElement>(null);
+  const [disputeContract, setDisputeContract] = useState<EscrowContract | null>(
+    null,
+  );
   const [contracts, setContracts] = useState<EscrowContract[] | null>(null);
   const [error, setError] = useState<{
     message: string;
