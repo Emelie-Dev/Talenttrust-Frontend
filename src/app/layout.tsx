@@ -13,7 +13,7 @@ import { WalletProvider } from '@/components/wallet/WalletProvider';
 import { NetworkGuard } from '@/components/wallet/NetworkGuard';
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
 import OfflineIndicator from '@/components/OfflineIndicator';
-import { site, explorerUrl, apiDocsUrl } from '@/lib/site';
+import { site, explorerUrl, apiDocsUrl, BRAND_THEME_COLORS } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: { default: 'TalentTrust | Milestone escrow on Stellar', template: '%s | TalentTrust' },
@@ -27,8 +27,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Provide per-scheme theme colours so the mobile browser chrome matches
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#4f46e5' },
-    { media: '(prefers-color-scheme: dark)',  color: '#818cf8' },
+    { media: '(prefers-color-scheme: light)', color: BRAND_THEME_COLORS.light },
+    { media: '(prefers-color-scheme: dark)', color: BRAND_THEME_COLORS.dark },
   ],
 };
 
