@@ -28,6 +28,8 @@ import {
 import { EscrowToolbar } from "./escrow/EscrowToolbar";
 import { Pagination } from "./escrow/Pagination";
 import { ExportMenu } from "./escrow/ExportMenu";
+import { FilterPresets } from "./escrow/FilterPresets";
+import { presetToSearch } from "@/lib/filterPresets";
 import { DisputeDialog } from "./disputes/DisputeDialog";
 import { EscrowCard } from "./escrow/EscrowCard";
 import { useConfirm } from "@/components/ui/ConfirmProvider";
@@ -191,9 +193,9 @@ export function EscrowDashboard() {
   }, [load]);
 
   const update = useCallback(
-    (patch: Partial<ContractQuery>) => {
-      const params = toSearchParams({ ...query, page: 1, ...patch });
-      if (view !== "all") params.set("view", view);
+    (patch: Partial<ContractQuery>, nextView: ViewFilter = view) => {
+      if (patch.q !== undefined) setSearch(patch.q);
+      const params = presetToSearch({ query: { ...query, ...patch, page: 1 }, view: nextView });
       const qs = params.toString();
       router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     },
@@ -600,6 +602,11 @@ export function EscrowDashboard() {
       <section className="stack" style={{ minWidth: 0 }} aria-labelledby="escrow-list">
         <div className="row list-actions">
           <ExportMenu contracts={visible} />
+          <FilterPresets
+            query={{ ...query, q: search.trim() }}
+            view={view}
+            onApply={(presetQuery, presetView) => update(presetQuery, presetView)}
+          />
         </div>
         <ViewFilterControl value={roleView} onChange={changeView} walletConnected={Boolean(walletAddress)} />
         {error && (
