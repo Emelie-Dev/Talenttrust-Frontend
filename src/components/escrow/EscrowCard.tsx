@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import type { EscrowContract } from '@/lib/api';
 import { MilestoneTimeline } from '@/components/milestones/MilestoneTimeline';
 
@@ -65,7 +66,9 @@ export function EscrowCard({
     >
       <div className="row" style={{ justifyContent: 'space-between' }}>
         <h3 id={headingId} style={{ margin: 0 }}>
-          #{contract.id} {contract.title}
+          <Link href={`/contracts/${contract.id}`}>
+            #{contract.id} {contract.title}
+          </Link>
         </h3>
         <div className="row" style={{ gap: 8 }}>
           {headerActions}
